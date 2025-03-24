@@ -580,7 +580,7 @@ def send_email(to_email, subject, body):
         SMTP_SERVER = "smtp.gmail.com"
         SMTP_PORT = 587
 
-        print(f"🔌 Connecting to SMTP server: {SMTP_SERVER}:{SMTP_PORT}")
+        print(f" Connecting to SMTP server: {SMTP_SERVER}:{SMTP_PORT}")
 
         
         server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
