@@ -57,7 +57,7 @@ class Campaign(db.Model):
 import sys
 sys.stdout.reconfigure(encoding='utf-8')  
 
-print("⚠️ 'campaign' table does not exist. Skipping migration.")
+print(" 'campaign' table does not exist. Skipping migration.")
 
 
 
@@ -108,13 +108,13 @@ with app.app_context():
                 cursor.execute("DROP TABLE campaign_old;")
 
                 conn.commit()
-                print("✅ Migration completed. 'is_run' column added successfully.")
+                print(" Migration completed. 'is_run' column added successfully.")
             except Exception as e:
-                print(f"⚠️ Error adding 'is_run' column: {e}")
+                print(f" Error adding 'is_run' column: {e}")
         else:
-            print("✅ 'is_run' column already exists.")
+            print(" 'is_run' column already exists.")
     else:
-        print("⚠️ 'campaign' table does not exist. Skipping migration.")
+        print(" 'campaign' table does not exist. Skipping migration.")
 
     conn.close()
 
@@ -299,17 +299,17 @@ def run_user_campaign(campaign_id):
 
         print(f"DEBUG: Successfully Parsed Email Details - {email_details}")
     except Exception as e:
-        print(f"❌ Error reading CSV file: {e}")
+        print(f" Error reading CSV file: {e}")
         flash("Error reading CSV file. Please check its formatting.", "danger")
         return redirect(url_for('user_campaigns'))
 
     if not email_details:
-        print("⚠️ No valid email details found in the CSV.")
+        print(" No valid email details found in the CSV.")
         flash("No valid email details found in the CSV file.", "warning")
         return redirect(url_for('user_campaigns'))
 
     try:
-        print(f"🚀 Generating email templates for category: {campaign.category}")
+        print(f" Generating email templates for category: {campaign.category}")
         emails = generate_templates(
             train_llm_with_templates('full_email_templates.csv')[0],
             train_llm_with_templates('full_email_templates.csv')[1],
@@ -322,7 +322,7 @@ def run_user_campaign(campaign_id):
             flash("No email templates found for the selected category.", "danger")
             return redirect(url_for('user_campaigns'))
     except Exception as e:
-        print(f"❌ Error generating emails: {e}")
+        print(f" Error generating emails: {e}")
         flash(f"Error generating emails: {e}", "danger")
         return redirect(url_for('user_campaigns'))
 
@@ -341,10 +341,10 @@ def run_user_campaign(campaign_id):
         try:
             send_email(email, subject, body)
             successful_emails += 1
-            print(f"✅ Email successfully sent to {email}")
+            print(f" Email successfully sent to {email}")
         except Exception as e:
             failed_emails += 1
-            print(f"❌ Failed to send email to {email}: {e}")
+            print(f" Failed to send email to {email}: {e}")
 
     print(f"DEBUG: Starting ThreadPoolExecutor with max_workers: {min(5, len(email_details))}")
     max_workers = min(5, len(email_details))
@@ -353,7 +353,7 @@ def run_user_campaign(campaign_id):
 
     campaign.is_run = True
     db.session.commit()
-    print(f"✅ Campaign {campaign_id} marked as run.")
+    print(f" Campaign {campaign_id} marked as run.")
 
     flash(f"Campaign run successfully! {successful_emails} emails sent.", "success")
     if failed_emails > 0:
@@ -475,26 +475,26 @@ def view_campaigns():
 from concurrent.futures import ThreadPoolExecutor, as_completed
 @app.route('/run_campaign/<int:campaign_id>', methods=['POST'])
 def run_campaign(campaign_id):
-    print(f"🚀 Run Campaign Triggered for ID: {campaign_id}")
+    print(f" Run Campaign Triggered for ID: {campaign_id}")
 
     campaign = db.session.get(Campaign, campaign_id)
     if not campaign:
-        print("❌ Campaign not found.")
+        print(" Campaign not found.")
         flash("Campaign not found.", "danger")
         return redirect(url_for('view_campaigns'))
 
     if campaign.is_run:
-        print("⚠️ This campaign has already been run.")
+        print(" This campaign has already been run.")
         flash("This campaign has already been run.", "warning")
         return redirect(url_for('view_campaigns'))
 
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], campaign.filename)
     if not os.path.exists(file_path):
-        print("❌ CSV file not found.")
+        print(" CSV file not found.")
         flash("CSV file not found.", "danger")
         return redirect(url_for('view_campaigns'))
 
-    print(f"📂 Reading email addresses from: {file_path}")
+    print(f" Reading email addresses from: {file_path}")
 
     email_details = []
     try:
@@ -509,16 +509,16 @@ def run_campaign(campaign_id):
                         "department": row["department"].strip()
                     })
     except Exception as e:
-        print(f"❌ Error reading CSV file: {e}")
+        print(f" Error reading CSV file: {e}")
         flash("Error reading CSV file.", "danger")
         return redirect(url_for('view_campaigns'))
 
     if not email_details:
-        print("⚠️ No valid email details found in CSV.")
+        print(" No valid email details found in CSV.")
         flash("No valid email details found in CSV.", "warning")
         return redirect(url_for('view_campaigns'))
 
-    print(f"🚀 Generating email templates for category: {campaign.category}")
+    print(f" Generating email templates for category: {campaign.category}")
     try:
         emails = generate_templates(
             train_llm_with_templates('full_email_templates.csv')[0],
@@ -530,11 +530,11 @@ def run_campaign(campaign_id):
         print(f"DEBUG: Emails returned from generate_templates: {emails}")
 
         if not emails:
-            print("❌ No email templates found for the selected category.")
+            print(" No email templates found for the selected category.")
             flash("No email templates found for the selected category.", "danger")
             return redirect(url_for('view_campaigns'))
     except Exception as e:
-        print(f"❌ Error generating emails: {e}")
+        print(f" Error generating emails: {e}")
         flash(f"Error generating emails: {e}", "danger")
         return redirect(url_for('view_campaigns'))
 
@@ -552,9 +552,9 @@ def run_campaign(campaign_id):
         try:
             send_email(email, subject, body)
             successful_emails += 1
-            print(f"✅ Email successfully sent to {email}")
+            print(f" Email successfully sent to {email}")
         except Exception as e:
-            print(f"❌ Failed to send email to {email}: {e}")
+            print(f" Failed to send email to {email}: {e}")
             failed_emails += 1
 
     
@@ -566,9 +566,9 @@ def run_campaign(campaign_id):
     campaign.is_run = True
     db.session.commit()
 
-    print(f"✅ Campaign run successfully. Sent to {successful_emails} emails.")
+    print(f" Campaign run successfully. Sent to {successful_emails} emails.")
     if failed_emails > 0:
-        print(f"⚠️ Failed to send to {failed_emails} emails.")
+        print(f" Failed to send to {failed_emails} emails.")
 
     return redirect(url_for('view_campaigns'))
 
@@ -585,10 +585,10 @@ def send_email(to_email, subject, body):
         
         server = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
         server.starttls()
-        print(f"🔑 Attempting to log in with email: {EMAIL}")
+        print(f" Attempting to log in with email: {EMAIL}")
         server.login(EMAIL, PASSWORD)
 
-        print(f"📤 Sending email to: {to_email}")
+        print(f" Sending email to: {to_email}")
         msg = MIMEMultipart()
         msg['From'] = EMAIL
         msg['To'] = to_email
@@ -598,15 +598,15 @@ def send_email(to_email, subject, body):
         server.sendmail(EMAIL, to_email, msg.as_string())
         server.quit()  
 
-        print(f"✅ Email successfully sent to {to_email}")
+        print(f" Email successfully sent to {to_email}")
     except smtplib.SMTPAuthenticationError as auth_err:
-        print(f"❌ SMTP Authentication Error: {auth_err}")
+        print(f" SMTP Authentication Error: {auth_err}")
     except smtplib.SMTPConnectError as conn_err:
-        print(f"❌ SMTP Connection Error: {conn_err}")
+        print(f" SMTP Connection Error: {conn_err}")
     except smtplib.SMTPRecipientsRefused as rec_err:
-        print(f"❌ SMTP Recipient Refused: {rec_err}")
+        print(f" SMTP Recipient Refused: {rec_err}")
     except Exception as e:
-        print(f"❌ General Error: {e}")
+        print(f" General Error: {e}")
 import random
 
 @app.route('/book-demo')
@@ -679,7 +679,7 @@ def view_report():
 
         fetch_loggly_data(user_ids, report_path)
 
-    flash("✅ Report updated with the latest logs!", "success")
+    flash(" Report updated with the latest logs!", "success")
     return redirect(url_for('user_dashboard'))
 
 @app.route('/user-view-report/<int:campaign_id>', methods=['GET'])
@@ -741,7 +741,7 @@ def fetch_loggly_data(email_addresses, report_path):
         response.raise_for_status()
         data = response.json()
         logs = data.get('events', [])
-        print(f"✅ Retrieved {len(logs)} logs from Loggly")  
+        print(f" Retrieved {len(logs)} logs from Loggly")  
 
         latest_clicks = {}  
         for log in logs:
@@ -775,31 +775,31 @@ def fetch_loggly_data(email_addresses, report_path):
                     "IP Address": ""
                 }])], ignore_index=True)
 
-        print(f"⚙️ Writing report to: {report_path}")  
+        print(f" Writing report to: {report_path}")  
         df.to_excel(report_path, index=False)
-        print(f"✅ Report saved: {report_path}") 
+        print(f" Report saved: {report_path}") 
 
     except Exception as e:
-        print(f"❌ Error in fetch_loggly_data: {e}")  
+        print(f" Error in fetch_loggly_data: {e}")  
         raise
     try:
         response = requests.get(LOGGLY_API_URL, headers=headers)
         response.raise_for_status()  
         data = response.json()
         logs = data.get('events', [])
-        print(f"✅ Retrieved {len(logs)} logs from Loggly")
+        print(f" Retrieved {len(logs)} logs from Loggly")
 
         
 
         df.to_excel(report_path, index=False)
-        print(f"✅ Report saved: {report_path}")
+        print(f" Report saved: {report_path}")
 
     except requests.exceptions.RequestException as e:
-        print(f"❌ Loggly API Error: {e}")
+        print(f" Loggly API Error: {e}")
     except ValueError as e:
-        print(f"❌ JSON Decoding Error: {e}")
+        print(f" JSON Decoding Error: {e}")
     except Exception as e:
-        print(f"❌ General Error in fetch_loggly_data: {e}") 
+        print(f" General Error in fetch_loggly_data: {e}") 
 
 
 
