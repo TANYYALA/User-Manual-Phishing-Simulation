@@ -52,11 +52,11 @@
             {% if campaign.is_run %}
             
                 <a href="{{ url_for('user_view_report', campaign_id=campaign.id) }}">
-                    <button class="report-btn">📊 View Report</button>
+                    <button class="report-btn"> View Report</button>
                 </a>
             
             {% else %}
-                <button disabled>⏳ Pending</button>
+                <button disabled> Pending</button>
             {% endif %}
         </td>
     </tr>
