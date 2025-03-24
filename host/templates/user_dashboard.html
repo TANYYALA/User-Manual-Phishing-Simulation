@@ -1,0 +1,64 @@
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    th, td {
+        padding: 10px;
+        text-align: center;
+        border: 1px solid #ddd;
+    }
+    th {
+        background-color: #007BFF;
+        color: white;
+    }
+    button {
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+    button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+    button:hover:not(:disabled) {
+        background-color: #0056b3;
+    }
+</style>
+
+<h2>Your Campaigns</h2>
+
+<a href="{{ url_for('user_campaigns') }}"><button>Your Campaigns</button></a>
+
+
+
+
+<button onclick="window.location.href='/register-campaign';">Register a Campaign</button>
+<table id="campaignTable">
+    <tr>
+        <th>Campaign ID</th>
+        <th>Category</th>
+        <th>Download Report</th>
+    </tr>
+    {% for campaign in campaigns %}
+    <tr>
+        <td>{{ campaign.id }}</td>
+        <td>{{ campaign.category }}</td>
+        <td>
+            {% if campaign.is_run %}
+            
+                <a href="{{ url_for('user_view_report', campaign_id=campaign.id) }}">
+                    <button class="report-btn">📊 View Report</button>
+                </a>
+            
+            {% else %}
+                <button disabled>⏳ Pending</button>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
