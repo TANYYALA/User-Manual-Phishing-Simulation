@@ -161,10 +161,10 @@ def generate_templates(model, training_data, category, email_details):
     }
     print(f"DEBUG: Input email details: {email_details}")
     if category not in category_prompts:
-        print(f"❌ Error: No prompts found for category '{category}'")
+        print(f" Error: No prompts found for category '{category}'")
         return {}
 
-    print(f"🚀 Generating email templates for category: {category}")
+    print(f" Generating email templates for category: {category}")
 
    
     emails = {detail["email"]: [] for detail in email_details}  
@@ -309,5 +309,5 @@ def generate_templates(model, training_data, category, email_details):
                 email, subject, body = result
                 emails[email].append((subject, body)) 
 
-    print(f"✅ Successfully generated {sum(len(templates) for templates in emails.values())} email templates.")
+    print(f" Successfully generated {sum(len(templates) for templates in emails.values())} email templates.")
     return emails
