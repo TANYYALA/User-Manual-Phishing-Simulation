@@ -52,10 +52,10 @@ class Campaign(db.Model):
     filename = db.Column(db.String(120), nullable=False)
     category = db.Column(db.String(50), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    is_run = db.Column(db.Boolean, default=False)  # ✅ Ensure this line exists
+    is_run = db.Column(db.Boolean, default=False)  
 
 import sys
-sys.stdout.reconfigure(encoding='utf-8')  # Ensures UTF-8 encoding
+sys.stdout.reconfigure(encoding='utf-8')  
 
 print("⚠️ 'campaign' table does not exist. Skipping migration.")
 
@@ -70,21 +70,21 @@ with app.app_context():
     conn = sqlite3.connect('users.db')
     cursor = conn.cursor()
 
-    # Check if the 'campaign' table exists
+    
     cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='campaign';")
     table_exists = cursor.fetchone()
 
     if table_exists:
-        # Check if 'is_run' column exists
+        
         cursor.execute("PRAGMA table_info(campaign);")
         columns = [col[1] for col in cursor.fetchall()]
 
         if 'is_run' not in columns:
             try:
-                # Rename the old table
+                
                 cursor.execute("ALTER TABLE campaign RENAME TO campaign_old;")
 
-                # Recreate the campaign table with 'is_run' column
+                
                 cursor.execute("""
                     CREATE TABLE campaign (
                         id INTEGER PRIMARY KEY,
@@ -97,14 +97,14 @@ with app.app_context():
                     );
                 """)
 
-                # Copy data from the old table
+                
                 cursor.execute("""
                     INSERT INTO campaign (id, company_name, campaign_date, filename, category, created_at)
                     SELECT id, company_name, campaign_date, filename, category, created_at
                     FROM campaign_old;
                 """)
 
-                # Drop the old table
+                
                 cursor.execute("DROP TABLE campaign_old;")
 
                 conn.commit()
