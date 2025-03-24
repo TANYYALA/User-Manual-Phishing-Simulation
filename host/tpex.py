@@ -11,14 +11,14 @@ import random
 
 nltk.download('punkt')
 
-# Initialize Gemini API Key
+
 genai.configure(api_key="AIzaSyA0CGp14csv72KDQk_KEyV4SD1TkvlrqtQ")
 
-# Function to clean and analyze text
+
 def clean_and_analyze_text(text):
     """Cleans input text and ensures professional tone."""
-    text = re.sub(r'[^\x00-\x7F]+', ' ', text)  # Remove non-ASCII characters
-    text = re.sub(r'\s+', ' ', text).strip()  # Remove extra whitespace
+    text = re.sub(r'[^\x00-\x7F]+', ' ', text)  
+    text = re.sub(r'\s+', ' ', text).strip()  
     sentiment = TextBlob(text).sentiment
 
     if sentiment.polarity < -0.2:
@@ -27,7 +27,7 @@ def clean_and_analyze_text(text):
     
     return text
 
-# Function to clean unwanted phrases
+
 def clean_unwanted_phrases(text):
     """Remove unwanted phrases related to links."""
     unwanted_phrases = ["Phishing Awareness", "phishing awareness", "cyberguard", "nithin1207v", "ngit.cyberguard"]
@@ -36,10 +36,10 @@ def clean_unwanted_phrases(text):
         pattern = rf'(?<!href=")\b{re.escape(phrase)}\b(?!")'
         text = re.sub(pattern, '', text, flags=re.IGNORECASE)
 
-    text = re.sub(r'\s+', ' ', text).strip()  # Clean extra spaces
+    text = re.sub(r'\s+', ' ', text).strip() 
     return text
 
-# Function to train the LLM with extracted templates
+
 def train_llm_with_templates(file_path='C:\\Users\\gumma\\OneDrive\\Desktop\\New folder\\wb\\wb\\web view\\web\\full_email_templates.csv'):
     df = pd.read_csv('C:\\pishing\\front end\\host\\host\\full_email_templates.csv')
 
@@ -50,11 +50,11 @@ def train_llm_with_templates(file_path='C:\\Users\\gumma\\OneDrive\\Desktop\\New
         training_data += f"Category: {row['Category']}\nEmail Body: {row['Email Body']}\n\n"
 
     return model, training_data
-# ✅ Function to generate a random product/order ID
+
 def generate_random_id():
     return str(random.randint(10000000000, 99999999999))
 
-# Email prompt template
+
 email_prompt_template = """
 You are a highly skilled professional email designer, known for creating detailed and comprehensive HTML email templates. Each email should meet the following criteria:
 
@@ -125,7 +125,7 @@ def modify_email_links(email_body, email_id):
 
 
 
-# Function to generate email templates based on trained model
+
 import concurrent.futures
 
 def generate_templates(model, training_data, category, email_details):
@@ -166,20 +166,20 @@ def generate_templates(model, training_data, category, email_details):
 
     print(f"🚀 Generating email templates for category: {category}")
 
-    # Initialize emails dictionary
-    emails = {detail["email"]: [] for detail in email_details}  # Use email as the key
+   
+    emails = {detail["email"]: [] for detail in email_details}  
 
-    # Function to generate a single email template
+    
     def generate_email(email_detail, subject, purpose, recipient):
         try:
-            # Extract recipient details
+          
             email = email_detail.get("email", "N/A")
             name = email_detail.get("name", "N/A")
             address = email_detail.get("address", "N/A")
             department = email_detail.get("department", "N/A")
        
 
-            # Validate required fields
+           
             if not name:
                 name = "User"
             if not address:
@@ -190,14 +190,14 @@ def generate_templates(model, training_data, category, email_details):
             
 
 
-            # ✅ Generate a random common American name
+           
             common_names = [
                 "David Parker", "Emily Ross", "Robert Green", "Sarah Thompson", 
                 "James Carter", "Jessica Moore", "Daniel Scott", "Amanda White",
                 "John Taylor", "Laura Martinez"
             ]
 
-            # ✅ Generate a random professional position
+           
             professional_positions = [
                 "Customer Service Manager", "Delivery Support Executive",
                 "Account Manager", "Subscription Coordinator",
@@ -205,18 +205,17 @@ def generate_templates(model, training_data, category, email_details):
                 "Corporate Communications Lead", "Relationship Manager"
             ]
 
-            # ✅ Randomly pick a name and position
             random_name = random.choice(common_names)
             random_position = random.choice(professional_positions)
 
 
 
-            # Debug details
+           
             print(f"DEBUG: Extracted details for email: {email}")
             print(f"DEBUG: Name: {name}, Address: {address}, Department: {department}")
 
             subject = subject.replace("Verify", "Review").replace("Confirm", "Check").replace("Security Alert", "Login Notification")
-            # Construct the prompt
+            
             prompt = f"""
             {email_prompt_template}
 
@@ -239,7 +238,7 @@ def generate_templates(model, training_data, category, email_details):
             """
             print(f"DEBUG: Prompt for email: {email}\n{prompt}")
 
-            # Generate email content
+      
             result = model.generate_content([prompt])
             if not hasattr(result, 'text') or not result.text:
                 print(f"❌ Error: Model returned empty response for email: {email}")
@@ -249,27 +248,27 @@ def generate_templates(model, training_data, category, email_details):
             print(f"DEBUG: Raw email body returned by model for {email}:\n{email_body}")
             
 
-            # Replace placeholders with actual details
+           
             print(f"DEBUG: Replacing placeholders in email body for {email}")
             email_body = email_body.replace("{name}", name or "Dear Valued Customer")
             email_body = email_body.replace("{address}", address or "N/A")
             email_body = email_body.replace("{department}", department or "N/A")
 
-            # ✅ Automatically replace any placeholder with real values
+            
             email_body = re.sub(r"\[Your Name\]", random_name, email_body)
             email_body = re.sub(r"\[Your Position\]", random_position, email_body)
-            email_body = re.sub(r"\[.*?\]", "", email_body)  # Remove any remaining placeholders
+            email_body = re.sub(r"\[.*?\]", "", email_body)  
 
-             # ✅ Remove unexpected triple quotes like '''html and '''
+             
             email_body = re.sub(r"^'''.*?html|'''$", "", email_body, flags=re.MULTILINE).strip()
             email_body = re.sub(r"^'''html|'''$", "", email_body, flags=re.IGNORECASE).strip()
             
-            # ✅ Ensure only one CTA button exists
-            email_body = re.sub(r'<a\s+href="[^"]*".*?</a>', '', email_body, flags=re.DOTALL)  # Remove existing buttons
-            # ✅ Dynamically generate the embedded URL for "Visit Our Website"
-            email_body = re.sub(r'<a\s*href="[^"]*"\s*class="button">.*?</a>', '', email_body)  # Remove any existing buttons
+            
+            email_body = re.sub(r'<a\s+href="[^"]*".*?</a>', '', email_body, flags=re.DOTALL) 
+            
+            email_body = re.sub(r'<a\s*href="[^"]*"\s*class="button">.*?</a>', '', email_body)  
 
-            # ✅ Inject a clean button without any wrapping <a>
+           
             email_body += f"""
             <p style="text-align:center;">
             <a href="https://teamy-labs.github.io/phishing-awareness-/?id={email.split('@')[0]}" 
@@ -283,7 +282,7 @@ def generate_templates(model, training_data, category, email_details):
 
 
 
-            # ✅ Remove any unwanted empty <a> tags injected by Gemini
+            
             email_body = re.sub(r'<a\s*href="https://teamy-labs.github.io/phishing-awareness-/">\s*</a>', '', email_body)
 
 
@@ -296,7 +295,7 @@ def generate_templates(model, training_data, category, email_details):
             print(f"❌ Error generating template for {email}: {e}")
             return None
 
-    # Use ThreadPoolExecutor to handle parallel email generation
+  
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
         future_to_email = {
             executor.submit(generate_email, detail, subject, purpose, recipient): detail["email"]
@@ -308,7 +307,7 @@ def generate_templates(model, training_data, category, email_details):
             result = future.result()
             if result:
                 email, subject, body = result
-                emails[email].append((subject, body))  # Append subject-body pairs
+                emails[email].append((subject, body)) 
 
     print(f"✅ Successfully generated {sum(len(templates) for templates in emails.values())} email templates.")
     return emails
