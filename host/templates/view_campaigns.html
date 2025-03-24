@@ -89,7 +89,7 @@
                     <th>CSV File</th>
                     <th>Uploaded On</th>
                     <th>Run Campaign</th>
-                    <th>View Report</th>  <!-- ✅ New Column for Reports -->
+                    <th>View Report</th>  
                 </tr>
             </thead>
             <tbody>
@@ -107,9 +107,9 @@
                         <form action="{{ url_for('run_campaign', campaign_id=campaign.id) }}" method="post">
                             <button type="submit" class="run-btn" {% if campaign.is_run %} disabled {% endif %}>
                                 {% if campaign.is_run %}
-                                    ✅ Completed
+                                    Completed
                                 {% else %}
-                                    🚀 Run Campaign
+                                    Run Campaign
                                 {% endif %}
                             </button>
                         </form>
@@ -118,12 +118,12 @@
                         {% if campaign.is_run %}
                         
                             <a href="{{ url_for('admin_view_report', company_name=campaign.company_name, campaign_id=campaign.id) }}">
-                                <button class="report-btn">📊 View Report</button>
+                                <button class="report-btn"> View Report</button>
                             </a>
                         
                         
                         {% else %}
-                        <button disabled>⏳ Awaiting Completion</button>
+                        <button disabled> Awaiting Completion</button>
                         {% endif %}
                     </td>
                 </tr>
@@ -132,7 +132,7 @@
         </table>
 
         <div style="text-align: center; margin-top: 20px;">
-            <a href="/admin_dashboard"><button class="danger-btn">⬅️ Back to Admin Dashboard</button></a>
+            <a href="/admin_dashboard"><button class="danger-btn"> Back to Admin Dashboard</button></a>
         </div>
     </body>
     </html>
