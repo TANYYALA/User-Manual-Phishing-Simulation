@@ -75,7 +75,7 @@
                 <td>{{ campaign.campaign_date }}</td>
                 <td>
                     <a href="{{ url_for('download_csv', filename=campaign.filename) }}">
-                        <button>📥 Download CSV</button>
+                        <button> Download CSV</button>
                     </a>
                 </td>
                 <td>{{ campaign.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
@@ -83,9 +83,9 @@
                     <form action="{{ url_for('run_user_campaign', campaign_id=campaign.id) }}" method="post">
                         <button type="submit" class="run-btn" {% if campaign.is_run %} disabled {% endif %}>
                             {% if campaign.is_run %}
-                                ✅ Completed
+                                 Completed
                             {% else %}
-                                🚀 Run Campaign
+                                 Run Campaign
                             {% endif %}
                         </button>
                     </form>
@@ -94,12 +94,12 @@
                     {% if campaign.is_run %}
                     
                     <a href="{{ url_for('user_view_report', campaign_id=campaign.id) }}">
-                        <button class="report-btn">📊 View Report</button>
+                        <button class="report-btn"> View Report</button>
                     </a>
                     
                     
                     {% else %}
-                    <button disabled>⏳ Awaiting Completion</button>
+                    <button disabled> Awaiting Completion</button>
                     {% endif %}
                 </td>
             </tr>
@@ -108,7 +108,7 @@
     </table>
 
     <div style="text-align: center; margin-top: 20px;">
-        <a href="/user-dashboard"><button>⬅️ Back to Dashboard</button></a>
+        <a href="/user-dashboard"><button> Back to Dashboard</button></a>
     </div>
 </body>
 </html>
