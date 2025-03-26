@@ -12,7 +12,7 @@ import random
 nltk.download('punkt')
 
 
-genai.configure(api_key="AIzaSyA0CGp14csv72KDQk_KEyV4SD1TkvlrqtQ")
+genai.configure(api_key="inside the goodle api file")
 
 
 def clean_and_analyze_text(text):
